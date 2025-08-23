@@ -160,6 +160,12 @@ func (t *Telegram) ClearBots() {
 	atomic.StoreUint64(&t.currentBot, 0)
 }
 
+type telegramErrorResponse struct {
+	OK          bool   `json:"ok"`
+	ErrorCode   int    `json:"error_code"`
+	Description string `json:"description"`
+}
+
 type telegramMessage struct {
 	ChatID    string `json:"chat_id"`
 	Text      string `json:"text"`
@@ -244,7 +250,13 @@ func (t *Telegram) Send(result core.CheckResult) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("telegram API returned non-200 status code: %d", resp.StatusCode)
+		var errorResp telegramErrorResponse
+		err := json.NewDecoder(resp.Body).Decode(&errorResp)
+		if err != nil {
+			return fmt.Errorf("telegram API returned non-200 status code: %d", resp.StatusCode)
+		}
+
+		return fmt.Errorf("telegram API returned %d error code: %s", errorResp.ErrorCode, errorResp.Description)
 	}
 
 	return nil
@@ -305,7 +317,13 @@ func (t *Telegram) SendWithQRCode(result core.CheckResult) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("telegram API returned non-200 status code: %d", resp.StatusCode)
+		var errorResp telegramErrorResponse
+		err := json.NewDecoder(resp.Body).Decode(&errorResp)
+		if err != nil {
+			return fmt.Errorf("telegram API returned non-200 status code: %d", resp.StatusCode)
+		}
+
+		return fmt.Errorf("telegram API returned %d error code: %s", errorResp.ErrorCode, errorResp.Description)
 	}
 
 	return nil
