@@ -44,15 +44,16 @@ type vlessJSONVnext struct {
 }
 
 type vlessJSONStreamSettings struct {
-	Network      string                 `json:"network"`
-	Security     string                 `json:"security,omitempty"`
-	WSSettings   map[string]interface{} `json:"wsSettings,omitempty"`
-	TCPSettings  map[string]interface{} `json:"tcpSettings,omitempty"`
-	KCPSettings  map[string]interface{} `json:"kcpSettings,omitempty"`
-	HTTPSettings map[string]interface{} `json:"httpSettings,omitempty"`
-	QUICSettings map[string]interface{} `json:"quicSettings,omitempty"`
-	GRPCSettings map[string]interface{} `json:"grpcSettings,omitempty"`
-	TLSSettings  map[string]interface{} `json:"tlsSettings,omitempty"`
+	Network       string                 `json:"network"`
+	Security      string                 `json:"security,omitempty"`
+	WSSettings    map[string]interface{} `json:"wsSettings,omitempty"`
+	TCPSettings   map[string]interface{} `json:"tcpSettings,omitempty"`
+	KCPSettings   map[string]interface{} `json:"kcpSettings,omitempty"`
+	HTTPSettings  map[string]interface{} `json:"httpSettings,omitempty"`
+	QUICSettings  map[string]interface{} `json:"quicSettings,omitempty"`
+	GRPCSettings  map[string]interface{} `json:"grpcSettings,omitempty"`
+	TLSSettings   map[string]interface{} `json:"tlsSettings,omitempty"`
+	XHTTPSettings map[string]interface{} `json:"xhttpSettings,omitempty"`
 }
 
 type vlessJSONSettings struct {
@@ -153,6 +154,22 @@ func (c *vlessConfig) MarshalJSON() ([]byte, error) {
 			grpcSettings["multiMode"] = (c.Mode == "multi")
 		}
 		streamSettings.GRPCSettings = grpcSettings
+	case "xhttp":
+		xhttpSettings := make(map[string]interface{})
+		if c.Host != "" {
+			xhttpSettings["host"] = c.Host
+		}
+		if c.Path != "" {
+			xhttpSettings["path"] = c.Path
+		}
+		if c.Mode != "" {
+			xhttpSettings["mode"] = c.Mode
+		}
+		// merge extra fields (scMaxEachPostBytes, noGRPCHeader, etc.)
+		for k, v := range c.Extra {
+			xhttpSettings[k] = v
+		}
+		streamSettings.XHTTPSettings = xhttpSettings
 	}
 
 	switch c.Security {
