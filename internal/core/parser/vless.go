@@ -188,6 +188,10 @@ func (c *vlessConfig) MarshalJSON() ([]byte, error) {
 			}
 			tlsSettings["alpn"] = alpnList
 		}
+		tlsSettings["allowInsecure"] = true
+		if c.Fingerprint != "" {
+			tlsSettings["fingerprint"] = c.Fingerprint
+		}
 		if len(tlsSettings) > 0 {
 			streamSettings.TLSSettings = tlsSettings
 		}
@@ -255,6 +259,10 @@ func parseVless(link string) (Config, error) {
 	if config.Network == "" {
 		config.Network = "tcp"
 	}
+	// normalize xhttp to splithttp (SAME SHIT JUST DIFFERENT NAMES)
+	if config.Network == "splithttp" {
+		config.Network = "xhttp"
+	}
 
 	config.Type = params.Get("headerType")
 	config.Host = params.Get("host")
@@ -262,6 +270,7 @@ func parseVless(link string) (Config, error) {
 	config.Mode = params.Get("mode")
 	config.Authority = params.Get("authority")
 	config.ServiceName = params.Get("serviceName")
+	config.Fingerprint = params.Get("fp")
 
 	if parsedURL.Fragment != "" {
 		config.Remark, _ = url.QueryUnescape(parsedURL.Fragment)
