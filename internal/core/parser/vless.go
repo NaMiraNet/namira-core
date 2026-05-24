@@ -10,23 +10,25 @@ import (
 )
 
 type vlessConfig struct {
-	Raw         string `json:"-"`
-	Server      string `json:"server"`
-	Port        int    `json:"port"`
-	ID          string `json:"id"`
-	Encryption  string `json:"encryption"`
-	Flow        string `json:"flow,omitempty"`
-	Security    string `json:"security,omitempty"`
-	SNI         string `json:"sni,omitempty"`
-	ALPN        string `json:"alpn,omitempty"`
-	Network     string `json:"network"`
-	Type        string `json:"type,omitempty"`
-	Host        string `json:"host,omitempty"`
-	Path        string `json:"path,omitempty"`
-	Mode        string `json:"mode,omitempty"`
-	Authority   string `json:"authority,omitempty"`
-	ServiceName string `json:"serviceName,omitempty"`
-	Remark      string `json:"remark,omitempty"`
+	Raw         string                 `json:"-"`
+	Server      string                 `json:"server"`
+	Port        int                    `json:"port"`
+	ID          string                 `json:"id"`
+	Encryption  string                 `json:"encryption"`
+	Flow        string                 `json:"flow,omitempty"`
+	Security    string                 `json:"security,omitempty"`
+	SNI         string                 `json:"sni,omitempty"`
+	ALPN        string                 `json:"alpn,omitempty"`
+	Network     string                 `json:"network"`
+	Type        string                 `json:"type,omitempty"`
+	Host        string                 `json:"host,omitempty"`
+	Path        string                 `json:"path,omitempty"`
+	Mode        string                 `json:"mode,omitempty"`
+	Authority   string                 `json:"authority,omitempty"`
+	ServiceName string                 `json:"serviceName,omitempty"`
+	Remark      string                 `json:"remark,omitempty"`
+	Fingerprint string                 `json:"fp,omitempty"`
+	Extra       map[string]interface{} `json:"extra,omitempty"`
 }
 
 type vlessJSONUser struct {
